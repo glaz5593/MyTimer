@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/app_background"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="90dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+            <TextView android:id="@+id/tv_time_added"
+                android:layout_width="match_parent"
+                android:text="+20"
+                android:textSize="30dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_alignParentBottom="true"
+                android:textColor="@color/app_clock_green"
+                android:layout_height="match_parent"/>
+            <TextView android:id="@+id/tv_time_old"
+                android:layout_width="match_parent"
+                android:text="+20"
+                android:textSize="30dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_alignParentBottom="true"
+                android:textColor="@color/app_clock_text"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="3dp"
+            android:background="#777777"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:tag="-20"
+            android:background="@drawable/main_button"
+            android:drawableBottom="@drawable/ic_arrow_down_button"
+            android:text="הורד 20 שניות"
+            android:onClick="onArrowRaiseClick"
+            android:textColor="@color/app_icons"
+            android:padding="4dp"
+            android:gravity="center"
+            android:layout_height="match_parent"/>
+        <View
+            android:layout_width="1dp"
+            android:background="#777777"
+            android:layout_height="match_parent"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/main_button"
+            android:drawableBottom="@drawable/ic_arrow_down_button"
+            android:text="הורד דקה"
+            android:tag="-60"
+            android:onClick="onArrowRaiseClick"
+            android:textColor="@color/app_icons"
+            android:padding="4dp"
+            android:gravity="center"
+            android:layout_height="match_parent"/>
+        <View
+            android:layout_width="1dp"
+            android:background="#777777"
+            android:layout_height="match_parent"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/main_button"
+            android:drawableBottom="@drawable/ic_arrow_up_button"
+            android:text="הוסף 20 שניות"
+            android:tag="20"
+            android:onClick="onArrowRaiseClick"
+            android:textColor="@color/app_icons"
+            android:padding="4dp"
+            android:gravity="center"
+            android:layout_height="match_parent"/>
+        <View
+            android:layout_width="1dp"
+            android:background="#777777"
+            android:layout_height="match_parent"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/main_button"
+            android:drawableBottom="@drawable/ic_arrow_up_button"
+            android:text="הוסף דקה"
+            android:onClick="onArrowRaiseClick"
+            android:tag="60"
+            android:padding="4dp"
+            android:textColor="@color/app_icons"
+            android:gravity="center"
+            android:layout_height="match_parent"/>
+        <View
+            android:layout_width="3dp"
+            android:background="#777777"
+            android:layout_height="match_parent"/>
+        <TextView android:id="@+id/btn_pause"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/main_button"
+            android:drawableBottom="@drawable/ic_pause_white_48dp"
+            android:text="השהייה"
+            android:onClick="onPauseClick"
+            android:textColor="@color/app_icons"
+            android:gravity="center"
+            android:layout_height="match_parent"/>
+        <View
+            android:layout_width="1dp"
+            android:background="#777777"
+            android:layout_height="match_parent"/>
+        <TextView android:id="@+id/btn_new"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/main_button"
+            android:drawableBottom="@drawable/ic_autorenew_black_24dp"
+            android:text="משחק חדש"
+            android:textColor="@color/app_icons"
+            android:onClick="onNewGameClick"
+            android:gravity="center"
+            android:layout_height="match_parent"/>
+        <View
+            android:layout_width="1dp"
+            android:background="#777777"
+            android:layout_height="match_parent"/>
+        <TextView android:id="@+id/btn_play"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/main_button"
+            android:drawableBottom="@drawable/ic_play_arrow_white"
+            android:text="המשך"
+            android:onClick="onPlayClick"
+            android:textColor="@color/app_icons"
+            
+            android:gravity="center"
+            android:layout_height="match_parent"/>
+        <TextView android:id="@+id/btn_stop"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/main_button"
+            android:drawableBottom="@drawable/ic_stop_white_48dp"
+            android:text="עצור"
+            android:onClick="onStopClick"
+            android:textColor="@color/app_icons"
+            
+            android:gravity="center"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+<View
+    android:layout_width="match_parent"
+    android:background="#777777"
+    android:layout_height="1dp"/>
+ <RelativeLayout
+     android:layout_width="match_parent"
+     android:layout_weight="1"
+     android:layout_height="match_parent">
+
+
+     <com.guzon.mytimer.FontFitTextView android:id="@+id/tv_time"
+         android:layout_width="match_parent"
+         android:text="12:49"
+         android:gravity="center"
+         android:textColor="@color/app_clock_text"
+         android:layout_height="match_parent"/>
+
+ </RelativeLayout>
+
+
+
+
+    
+</LinearLayout>

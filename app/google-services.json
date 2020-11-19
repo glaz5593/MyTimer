@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "495234679437",
+    "firebase_url": "https://moshe-basketballtimer.firebaseio.com",
+    "project_id": "moshe-basketballtimer",
+    "storage_bucket": "moshe-basketballtimer.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:495234679437:android:27acb8c311c63bd93a18c4",
+        "android_client_info": {
+          "package_name": "com.guzon.mytimer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "495234679437-h7fbv3r09g53thof0ic0nfl58e1kr2lb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWSHh2zJeAXyda7LDrvUqaT_t9YpE9t5Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "495234679437-h7fbv3r09g53thof0ic0nfl58e1kr2lb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

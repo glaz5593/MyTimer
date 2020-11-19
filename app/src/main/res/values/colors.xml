@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="app_background">#080808</color>
+    <color name="app_clock_text">#FF4536</color>
+    <color name="app_clock_green">#7CE473</color>
+    <color name="app_on_click">#777777</color>
+    <color name="app_icons">#fff0f0</color>
+    <color name="white">#ffffff</color>
+</resources>
