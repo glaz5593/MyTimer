@@ -16,7 +16,7 @@ import android.widget.TextView;
 import java.util.Arrays;
 import java.util.Date;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements GameManager.GameManagerListener {
     Game game;
     boolean isActive;
     Thread thread;
@@ -29,6 +29,8 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         setContentView(R.layout.activity_main);
         tv_time = findViewById(R.id.tv_time);
         tv_time_added = findViewById(R.id.tv_time_added);
@@ -88,6 +90,7 @@ public class MainActivity extends Activity {
         game = GameManager.getInstance().getActive();
         updateUi();
         runningTimeThread();
+        GameManager.getInstance().setListener(this);
     }
 
     @Override
@@ -126,7 +129,6 @@ public class MainActivity extends Activity {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-
                 }
 
                 tv_time.post(new Runnable() {
@@ -191,7 +193,12 @@ public class MainActivity extends Activity {
             return;
         }
 
-        tv_time.setText(GameManager.getInstance().getTimeToString(game.getSeconds()));
+        int sec=game.getSeconds();
+        if(sec < -60000){
+            GameManager.getInstance().stopGame();
+        }
+
+        tv_time.setText(GameManager.getInstance().getTimeToString(sec));
     }
 
     public void onNewGameClick(View view) {
@@ -263,6 +270,20 @@ public class MainActivity extends Activity {
         } catch (Exception e) {
             Log.i("error",e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onGameUpdate(Game game) {
+        if(isActive) {
+            this.game = game;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    updateUi();
+                    runningTimeThread();
+                }
+            });
         }
     }
 }

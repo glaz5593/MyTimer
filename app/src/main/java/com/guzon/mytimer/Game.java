@@ -1,29 +1,30 @@
 package com.guzon.mytimer;
 
-import java.time.Instant;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Game {
+public class Game implements Serializable {
+
     public Game() {
         clear();
     }
 
-    public Date startGame;
+    public Date endGame;
     public Date startPlayGame;
     public ArrayList<Integer> addSeconds;
     public ArrayList<GamePause> pauses;
     public ArrayList<GameRing> ringRequired;
-
+    public GameOldData oldData;
     public boolean active() {
-        return startGame != null;
+        return endGame != null;
     }
 
     public void clear() {
         pauses = new ArrayList<>();
         addSeconds = new ArrayList<>();
         ringRequired = new ArrayList<>();
-        startGame = null;
+        endGame = null;
     }
 
     public int getSumSeconds() {
@@ -38,17 +39,17 @@ public class Game {
     }
 
     public int getSeconds() {
-        if (startGame == null) {
+        if (endGame == null) {
             return 0;
         }
-        TimeSpan ts = new TimeSpan(new Date(), startGame);
+        TimeSpan ts = new TimeSpan(new Date(), endGame);
         int pauseSeconds = getPausesSecounds();
         int addSec = getAddSeconds();
         return (int) ts.totalSeconds + pauseSeconds + addSec;
     }
 
     public int getAddSeconds() {
-        if (startGame == null) {
+        if (endGame == null) {
             return 0;
         }
 
@@ -62,7 +63,7 @@ public class Game {
     }
 
     public int getPausesSecounds() {
-        if (startGame == null) {
+        if (endGame == null) {
             return 0;
         }
         int res = 0;
@@ -77,7 +78,7 @@ public class Game {
     }
 
     public GamePause getActivePause() {
-        if (startGame == null) {
+        if (endGame == null) {
             return null;
         }
 
@@ -93,7 +94,7 @@ public class Game {
     }
 
     public GameRing getRequiredRing() {
-        if (startGame == null) {
+        if (endGame == null) {
             return null;
         }
 
@@ -112,7 +113,6 @@ public class Game {
         return null;
     }
 
-GameOldData oldData;
     public boolean hasOldData() {
         return oldData!= null;
     }
