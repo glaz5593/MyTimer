@@ -12,17 +12,19 @@
    <ImageView
        android:layout_width="match_parent"
        android:src="@drawable/background"
+       android:scaleType="centerCrop"
        android:layout_height="match_parent"/>
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="vertical"
-        android:background="#cc000000"
+        android:background="#d9000000"
         android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
             android:orientation="horizontal"
+            android:background="#15ffffff"
             android:layout_height="90dp">
             <LinearLayout
                 android:layout_width="match_parent"

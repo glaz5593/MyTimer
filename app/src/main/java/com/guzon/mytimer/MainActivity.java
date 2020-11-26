@@ -125,7 +125,7 @@ public class MainActivity extends Activity implements GameManager.GameManagerLis
                     }
 
                     try {
-                        Thread.sleep(200);
+                        Thread.sleep(400);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
