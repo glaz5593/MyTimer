@@ -19,6 +19,8 @@ import java.util.Hashtable;
 
 public class GameManager {
     private Game game;
+    String gameTag=FlavorManager.getFirebaseTag();
+
     private static GameManager instance;
     GameManagerListener listener;
     public interface GameManagerListener{void onGameUpdate(Game game);}
@@ -42,7 +44,7 @@ public class GameManager {
             game = new Game();
         }
 
-        database.collection("gameM").document("game").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        database.collection(gameTag).document("game").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
@@ -59,7 +61,7 @@ public class GameManager {
             }
         });
 
-        database.collection("gameM").document("game").addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        database.collection(gameTag).document("game").addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot,
                                 @Nullable FirebaseFirestoreException e) {
@@ -99,7 +101,7 @@ public class GameManager {
         String j = Json.toString(game);
         Hashtable<String,String> list= new Hashtable<>();
         list.put("game",j);
-        database.collection("gameM").document("game").set(list).addOnCompleteListener(new OnCompleteListener<Void>() {
+        database.collection(gameTag).document("game").set(list).addOnCompleteListener(new OnCompleteListener<Void>() {
 
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -116,7 +118,7 @@ public class GameManager {
         stopGame();
 
         game.startPlayGame=new Date();
-        game.endGame = Utils.addSeconds(game.startPlayGame, 902);
+        game.endGame = Utils.addSeconds(game.startPlayGame, FlavorManager.getGameSeconds());
         game.ringRequired = new ArrayList<>();
         game.ringRequired.add(new GameRing(1,R.raw.buzzer, R.raw.buzzer, R.raw.buzzer, R.raw.buzzer, R.raw.time_end, R.raw.time_end));
 
@@ -127,9 +129,6 @@ public class GameManager {
         game.ringRequired.add(new GameRing(30, R.raw.buzzer, R.raw.buzzer, R.raw.buzzer, R.raw.d0_5));
         game.ringRequired.add(new GameRing(60, R.raw.buzzer, R.raw.buzzer, R.raw.buzzer, R.raw.d1));
         game.ringRequired.add(new GameRing(120, R.raw.buzzer, R.raw.buzzer, R.raw.d2));
-        game.ringRequired.add(new GameRing(180, R.raw.buzzer, R.raw.buzzer, R.raw.d3));
-        game.ringRequired.add(new GameRing(300, R.raw.buzzer, R.raw.d5));
-        game.ringRequired.add(new GameRing(600, R.raw.buzzer, R.raw.d10));
 
         saveGame();
     }

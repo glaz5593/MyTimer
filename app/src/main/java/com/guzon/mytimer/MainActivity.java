@@ -2,34 +2,38 @@ package com.guzon.mytimer;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends Activity implements GameManager.GameManagerListener {
     Game game;
     boolean isActive;
     Thread thread;
-    TextView tv_time_added,tv_time_old;
+    TextView tv_time_added,tv_time_old,tv_flavor;
     FontFitTextView tv_time;
-    View btn_play,btn_stop, btn_pause, btn_new;
-
+    View btn_play,btn_stop, btn_pause, btn_new,ll_action_bar;
+int millisToHideActionBar=4000;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        setFullScreen();
 
         setContentView(R.layout.activity_main);
         tv_time = findViewById(R.id.tv_time);
@@ -40,12 +44,77 @@ public class MainActivity extends Activity implements GameManager.GameManagerLis
         btn_stop = findViewById(R.id.btn_stop);
         btn_pause = findViewById(R.id.btn_pause);
         btn_new = findViewById(R.id.btn_new);
-
+        ll_action_bar = findViewById(R.id.ll_action_bar);
+        tv_flavor= findViewById(R.id.tv_flavor);
+        
         Typeface myTypeface = Typeface.createFromAsset(this.getAssets(),
                 "dismay.otf");
         tv_time.setTypeface(myTypeface);
         tv_time_added.setTypeface(myTypeface);
         tv_time_old.setTypeface(myTypeface);
+
+        tv_flavor.setText(FlavorManager.getMainBottomText());
+        ((ImageView)findViewById(R.id.iv_background)).setBackgroundResource(FlavorManager.getBackground());
+    }
+
+    private void setFullScreen() {
+        int currentApiVersion = android.os.Build.VERSION.SDK_INT;
+        final int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+
+        // This work only for android 4.4+
+        if(currentApiVersion >= Build.VERSION_CODES.KITKAT)
+        {
+            try {
+            getWindow().getDecorView().setSystemUiVisibility(flags);
+
+            // Code below is to handle presses of Volume up or Volume down.
+            // Without this, after pressing volume buttons, the navigation bar will
+            // show up and won't hide
+            final View decorView = getWindow().getDecorView();
+
+                decorView .setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener()
+                        {
+
+                            @Override
+                            public void onSystemUiVisibilityChange(int visibility)
+                            {
+                                if((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0)
+                                {
+                                    decorView.setSystemUiVisibility(flags);
+                                }
+                            }
+                        });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @SuppressLint("NewApi")
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus)
+    {
+        super.onWindowFocusChanged(hasFocus);
+        int currentApiVersion = android.os.Build.VERSION.SDK_INT;
+        if(currentApiVersion >= Build.VERSION_CODES.KITKAT && hasFocus)
+        {
+            try {
+                getWindow().getDecorView().setSystemUiVisibility(
+                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void onArrowRaiseClick(View view) {
@@ -71,6 +140,7 @@ public class MainActivity extends Activity implements GameManager.GameManagerLis
             }
         }
         GameManager.getInstance().saveGame();
+        setBarUnVisibilityIfGameActive();
     }
 
 
@@ -91,6 +161,9 @@ public class MainActivity extends Activity implements GameManager.GameManagerLis
         updateUi();
         runningTimeThread();
         GameManager.getInstance().setListener(this);
+
+        setBarVisibility(true);
+        setBarUnVisibilityIfGameActive();
     }
 
     @Override
@@ -193,9 +266,13 @@ public class MainActivity extends Activity implements GameManager.GameManagerLis
             return;
         }
 
-        int sec=game.getSeconds();
-        if(sec < -60000){
+        int sec = game.getSeconds();
+        if (sec < -60000) {
             GameManager.getInstance().stopGame();
+        }
+
+        if (sec == 0 || sec == -1 && game.active()) {
+            setBarVisibility(true);
         }
 
         tv_time.setText(GameManager.getInstance().getTimeToString(sec));
@@ -206,12 +283,66 @@ public class MainActivity extends Activity implements GameManager.GameManagerLis
         runningTimeThread();
         updateUi();
         playRaw(R.raw.new_game);
+
+        setBarUnVisibilityIfGameActive();
+    }
+
+    static int setBarVisibilityAction_static=0;
+
+    private void switchBarVisibility() {
+        setBarVisibility(ll_action_bar.getVisibility()!=View.VISIBLE);
+    }
+
+    private void setBarVisibility(boolean visibility) {
+        setBarUnVisibilityIfGameActive();
+        ll_action_bar.setVisibility(visibility ? View.VISIBLE:View.GONE);
+        tv_flavor.setVisibility(visibility ? View.VISIBLE:View.GONE);
+        
+        if(visibility){
+            setBarUnVisibilityIfGameActive();
+        }
+    }
+
+    private void setBarUnVisibilityIfGameActive() {
+        final int setBarVisibilityAction = ++setBarVisibilityAction_static;
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (setBarVisibilityAction != setBarVisibilityAction_static) {
+                    return;
+                }
+
+                boolean hasActivePause = game.getActivePause() != null;
+                int sec = game.getPausesSecounds() + game.getAddSeconds();
+                if (game==null || !game.active() || sec <0 || hasActivePause) {
+                    return;
+                }
+                
+                try {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            setBarVisibility(false);
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                this.cancel();
+            }
+        }, millisToHideActionBar, millisToHideActionBar);
+    }
+
+    public void onTimeClick(View view) {
+        switchBarVisibility();
     }
 
     public void onStopClick(View view) {
         GameManager.getInstance().stopGame();
         updateUi();
         playRaw(R.raw.stop_game);
+        setBarUnVisibilityIfGameActive();
     }
 
     public void onPlayClick(View view) {
@@ -219,6 +350,7 @@ public class MainActivity extends Activity implements GameManager.GameManagerLis
         GameManager.getInstance().saveGame();
         updateUi();
         playRaw(R.raw.next);
+        setBarUnVisibilityIfGameActive();
     }
 
     public void onPauseClick(View view) {
@@ -226,6 +358,7 @@ public class MainActivity extends Activity implements GameManager.GameManagerLis
         GameManager.getInstance().saveGame();
         updateUi();
         playRaw(R.raw.pause);
+        setBarUnVisibilityIfGameActive();
     }
 
 

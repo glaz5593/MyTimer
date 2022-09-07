@@ -7,6 +7,7 @@ public class AppBase extends Application {
     private static AppBase mInstance;
     public static Context context;
 
+
     @Override
     public void onCreate() {
         super.onCreate();

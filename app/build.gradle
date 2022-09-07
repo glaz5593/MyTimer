@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 33
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.guzon.mytimer"
         minSdkVersion 22
-        targetSdkVersion 29
+        targetSdkVersion 33
         versionCode 101
         versionName "1.0.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -16,6 +16,31 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    flavorDimensions "customer"
+
+
+    productFlavors {
+        Goldberg {
+            dimension "customer"
+            resValue "string", "app_name", "טיימר פפאסל"
+            versionCode 101
+            versionName "1.0.1"
+        }
+        Chen {
+            dimension "customer"
+            resValue "string", "app_name", "טיימר כדורסל"
+            versionCode 101
+            versionName "1.0.1"
+        }
+    }
+
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            def name = variant.name.replace("Debug", "").replace("Release", " Release")
+            outputFileName = "PureTrack-Main($name Build)-${variant.versionName}.apk"
         }
     }
 }
