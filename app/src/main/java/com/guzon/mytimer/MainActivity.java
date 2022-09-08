@@ -29,6 +29,9 @@ public class MainActivity extends Activity implements GameManager.GameManagerLis
     FontFitTextView tv_time;
     View btn_play,btn_stop, btn_pause, btn_new,ll_action_bar;
 int millisToHideActionBar=4000;
+    Date lastGameAction=new Date();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -139,8 +142,9 @@ int millisToHideActionBar=4000;
                 break;
             }
         }
+
+        lastGameAction=new Date();
         GameManager.getInstance().saveGame();
-        setBarUnVisibilityIfGameActive();
     }
 
 
@@ -163,7 +167,6 @@ int millisToHideActionBar=4000;
         GameManager.getInstance().setListener(this);
 
         setBarVisibility(true);
-        setBarUnVisibilityIfGameActive();
     }
 
     @Override
@@ -216,14 +219,13 @@ int millisToHideActionBar=4000;
         });
         thread.start();
     }
-
     private void updateUi() {
         updateTimeUi();
 
         tv_time_old.setVisibility(View.GONE);
 
         if (game == null) {
-            btn_play.setVisibility(View.GONE);
+           btn_play.setVisibility(View.GONE);
             btn_stop.setVisibility(View.GONE);
             btn_pause.setVisibility(View.INVISIBLE);
             btn_new.setVisibility(View.VISIBLE);
@@ -233,7 +235,7 @@ int millisToHideActionBar=4000;
 
         boolean hasActivePause = game.getActivePause() != null;
         int sec = game.getPausesSecounds() + game.getAddSeconds();
-        tv_time_added.setText(sec ==0 ? "" : GameManager.getInstance().getTimeToString(sec));
+        tv_time_added.setText(sec == 0 ? "" : GameManager.getInstance().getTimeToString(sec));
 
         if (!game.active()) {
             btn_play.setVisibility(View.GONE);
@@ -241,7 +243,7 @@ int millisToHideActionBar=4000;
             btn_pause.setVisibility(View.INVISIBLE);
             btn_new.setVisibility(View.VISIBLE);
 
-            if(game.hasOldData()){
+            if (game.hasOldData()) {
                 tv_time_old.setVisibility(View.VISIBLE);
                 tv_time_old.setText(game.oldData.time);
                 tv_time_added.setText(game.oldData.addedTime);
@@ -258,11 +260,13 @@ int millisToHideActionBar=4000;
 
     private void updateTimeUi() {
         if (game == null) {
+            setBarVisibility(true);
             tv_time.setText("--:--");
             return;
         }
 
         if (game.getActivePause() != null) {
+            setBarVisibility(true);
             return;
         }
 
@@ -271,8 +275,10 @@ int millisToHideActionBar=4000;
             GameManager.getInstance().stopGame();
         }
 
-        if (sec == 0 || sec == -1 && game.active()) {
-            setBarVisibility(true);
+        boolean actionBarVisibility = ll_action_bar.getVisibility() == View.VISIBLE;
+        boolean requiredActionBarVisibility = new Date().getTime() - lastGameAction.getTime() < millisToHideActionBar;
+        if (actionBarVisibility != requiredActionBarVisibility) {
+            setBarVisibility(requiredActionBarVisibility);
         }
 
         tv_time.setText(GameManager.getInstance().getTimeToString(sec));
@@ -280,85 +286,49 @@ int millisToHideActionBar=4000;
 
     public void onNewGameClick(View view) {
         GameManager.getInstance().startNewGame();
+        lastGameAction=new Date();
         runningTimeThread();
         updateUi();
         playRaw(R.raw.new_game);
-
-        setBarUnVisibilityIfGameActive();
     }
-
-    static int setBarVisibilityAction_static=0;
 
     private void switchBarVisibility() {
         setBarVisibility(ll_action_bar.getVisibility()!=View.VISIBLE);
     }
 
     private void setBarVisibility(boolean visibility) {
-        setBarUnVisibilityIfGameActive();
         ll_action_bar.setVisibility(visibility ? View.VISIBLE:View.GONE);
         tv_flavor.setVisibility(visibility ? View.VISIBLE:View.GONE);
-        
-        if(visibility){
-            setBarUnVisibilityIfGameActive();
-        }
-    }
-
-    private void setBarUnVisibilityIfGameActive() {
-        final int setBarVisibilityAction = ++setBarVisibilityAction_static;
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (setBarVisibilityAction != setBarVisibilityAction_static) {
-                    return;
-                }
-
-                boolean hasActivePause = game.getActivePause() != null;
-                int sec = game.getPausesSecounds() + game.getAddSeconds();
-                if (game==null || !game.active() || sec <0 || hasActivePause) {
-                    return;
-                }
-                
-                try {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            setBarVisibility(false);
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                this.cancel();
-            }
-        }, millisToHideActionBar, millisToHideActionBar);
     }
 
     public void onTimeClick(View view) {
+        lastGameAction=new Date();
         switchBarVisibility();
     }
 
     public void onStopClick(View view) {
         GameManager.getInstance().stopGame();
+        lastGameAction=new Date();
         updateUi();
         playRaw(R.raw.stop_game);
-        setBarUnVisibilityIfGameActive();
     }
 
     public void onPlayClick(View view) {
         game.getActivePause().end=new Date();
+        lastGameAction=new Date();
         GameManager.getInstance().saveGame();
         updateUi();
         playRaw(R.raw.next);
-        setBarUnVisibilityIfGameActive();
+        
     }
 
     public void onPauseClick(View view) {
         game.pause();
         GameManager.getInstance().saveGame();
+        lastGameAction=new Date();
         updateUi();
         playRaw(R.raw.pause);
-        setBarUnVisibilityIfGameActive();
+        
     }
 
 

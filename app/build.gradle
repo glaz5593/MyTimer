@@ -26,21 +26,21 @@ android {
         Goldberg {
             dimension "customer"
             resValue "string", "app_name", "טיימר פפאסל"
-            versionCode 101
-            versionName "1.0.1"
+            versionCode 102
+            versionName "1.0.2"
         }
         Chen {
             dimension "customer"
             resValue "string", "app_name", "טיימר כדורסל"
-            versionCode 101
-            versionName "1.0.1"
+            versionCode 102
+            versionName "1.0.2"
         }
     }
 
     android.applicationVariants.all { variant ->
         variant.outputs.all {
             def name = variant.name.replace("Debug", "").replace("Release", " Release")
-            outputFileName = "PureTrack-Main($name Build)-${variant.versionName}.apk"
+            outputFileName = "BasketballTimer($name Build)-${variant.versionName}.apk"
         }
     }
 }

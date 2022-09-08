@@ -24,9 +24,7 @@ public class GameManager {
     private static GameManager instance;
     GameManagerListener listener;
     public interface GameManagerListener{void onGameUpdate(Game game);}
-    //PreferencesManagerInterface preferences;
-    //DatabaseReference database;
-    FirebaseFirestore database = FirebaseFirestore.getInstance();
+    FirebaseFirestore database;
 
     public void  setListener( GameManagerListener listener){
     this.listener=listener;
@@ -49,7 +47,7 @@ public class GameManager {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
+                    if (document != null && document.getData() != null && document.exists() ) {
                         Log.d("GameManager", "DocumentSnapshot data: " + document.getData());
                         setGameFromFirebase(document.getData().toString());
                     } else {
@@ -70,7 +68,7 @@ public class GameManager {
                     return;
                 }
 
-                if (snapshot != null && snapshot.exists()) {
+                if (snapshot != null && snapshot.getData()!= null && snapshot.exists()) {
                     Log.d("onEvent", "Current data: " + snapshot.getData());
                     setGameFromFirebase(snapshot.getData().toString());
                 } else {
@@ -96,6 +94,7 @@ public class GameManager {
             listener.onGameUpdate(game);
         }
     }
+
 
     public void  saveGame(){
         String j = Json.toString(game);
@@ -181,7 +180,7 @@ public class GameManager {
         if (add <= 0) {
             return s;
         }
-        StringBuffer str = new StringBuffer(s);
+        StringBuilder str = new StringBuilder(s);
         char[] ch = new char[add];
         Arrays.fill(ch, c);
         if (paddingLeft) {
@@ -244,6 +243,7 @@ public class GameManager {
         String s2 = str2 == null ? "" : str2;
         return s2.equals(s1);
     }
+
     public static String removeFromLeft(String text, int length) {
         if (isNullOrEmpty(text)) {
             return "";
@@ -253,6 +253,6 @@ public class GameManager {
             return "";
         }
 
-        return text.substring(length, text.length());
+        return text.substring(length);
     }
 }
