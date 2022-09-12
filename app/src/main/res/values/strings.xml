@@ -3,5 +3,16 @@
     <string name="event_predefine">Event Predefine</string>
     <string name="event_custom">Event Custom</string>
     <string name="sent_predefine">Predefine event sent.</string>
-    <string name="sent_custom">Custom event sent.</string>
+    <string name="reduce20seconds">reduce 20 seconds</string>
+    <string name="reduceMinute">reduce Minute</string>
+    <string name="add20seconds">add 20 seconds</string>
+    <string name="addMinute">add Minute</string>
+    <string name="pause">Pause</string>
+    <string name="new_game">new game</string>
+    <string name="next">Next</string>
+    <string name="stop">Stop</string>
+
+
+
+
 </resources>

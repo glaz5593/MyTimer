@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -27,7 +28,7 @@ public class MainActivity extends Activity implements GameManager.GameManagerLis
     Thread thread;
     TextView tv_time_added,tv_time_old,tv_flavor;
     FontFitTextView tv_time;
-    View btn_play,btn_stop, btn_pause, btn_new,ll_action_bar;
+    View btn_play,btn_stop, btn_pause, btn_new,ll_action_bar,v_action_bar_line;
 int millisToHideActionBar=4000;
     Date lastGameAction=new Date();
 
@@ -37,6 +38,9 @@ int millisToHideActionBar=4000;
         super.onCreate(savedInstanceState);
 
         setFullScreen();
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         setContentView(R.layout.activity_main);
         tv_time = findViewById(R.id.tv_time);
@@ -48,6 +52,7 @@ int millisToHideActionBar=4000;
         btn_pause = findViewById(R.id.btn_pause);
         btn_new = findViewById(R.id.btn_new);
         ll_action_bar = findViewById(R.id.ll_action_bar);
+        v_action_bar_line = findViewById(R.id.v_action_bar_line);
         tv_flavor= findViewById(R.id.tv_flavor);
         
         Typeface myTypeface = Typeface.createFromAsset(this.getAssets(),
@@ -57,7 +62,7 @@ int millisToHideActionBar=4000;
         tv_time_old.setTypeface(myTypeface);
 
         tv_flavor.setText(FlavorManager.getMainBottomText());
-        ((ImageView)findViewById(R.id.iv_background)).setBackgroundResource(FlavorManager.getBackground());
+        ((ImageView)findViewById(R.id.iv_background)).setImageResource(FlavorManager.getBackground());
     }
 
     private void setFullScreen() {
@@ -297,6 +302,7 @@ int millisToHideActionBar=4000;
     }
 
     private void setBarVisibility(boolean visibility) {
+        v_action_bar_line.setVisibility(visibility ? View.VISIBLE:View.GONE);
         ll_action_bar.setVisibility(visibility ? View.VISIBLE:View.GONE);
         tv_flavor.setVisibility(visibility ? View.VISIBLE:View.GONE);
     }
@@ -330,9 +336,45 @@ int millisToHideActionBar=4000;
         playRaw(R.raw.pause);
         
     }
-
+ 
 
     private void playRaw(int resId) {
+        if(Locale.getDefault().getLanguage().equals("en")) {
+            switch (resId) {
+                case R.raw.minus_20: {
+                    resId = R.raw.en_reduce_20_sec;
+                    break;
+                }
+                case R.raw.plus_20: {
+                    resId = R.raw.en_add_20_sec;
+                    break;
+                }
+                case R.raw.minus_60: {
+                    resId = R.raw.en_reduce_1_minute;
+                    break;
+                }
+                case R.raw.plus_60: {
+                    resId = R.raw.en_add_1_minute;
+                    break;
+                }
+                case R.raw.new_game: {
+                    resId = R.raw.en_new_game;
+                    break;
+                }
+                case R.raw.stop_game: {
+                    resId = R.raw.en_game_over;
+                    break;
+                }
+                case R.raw.next: {
+                    resId = R.raw.en_next;
+                    break;
+                }
+                case R.raw.pause: {
+                    resId = R.raw.en_pause;
+                    break;
+                }
+            }
+        }
         playRaw( resId, new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {

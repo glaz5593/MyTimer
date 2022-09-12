@@ -55,6 +55,6 @@ public class TestFirebaseActivity extends AppCompatActivity {
 
         // custom event must be <= 32 characters
         mFirebaseAnalytics.logEvent("share_image", params);
-        mTextView.setText(R.string.sent_custom);
+        mTextView.setText("send");
     }
 }

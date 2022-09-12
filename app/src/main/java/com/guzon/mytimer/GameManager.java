@@ -118,17 +118,8 @@ public class GameManager {
 
         game.startPlayGame=new Date();
         game.endGame = Utils.addSeconds(game.startPlayGame, FlavorManager.getGameSeconds());
-        game.ringRequired = new ArrayList<>();
-        game.ringRequired.add(new GameRing(1,R.raw.buzzer, R.raw.buzzer, R.raw.buzzer, R.raw.buzzer, R.raw.time_end, R.raw.time_end));
 
-        for (int i = 2; i <=11; i++) {
-            game.ringRequired.add(new GameRing(i, R.raw.buzzer));
-        }
-
-        game.ringRequired.add(new GameRing(30, R.raw.buzzer, R.raw.buzzer, R.raw.buzzer, R.raw.d0_5));
-        game.ringRequired.add(new GameRing(60, R.raw.buzzer, R.raw.buzzer, R.raw.buzzer, R.raw.d1));
-        game.ringRequired.add(new GameRing(120, R.raw.buzzer, R.raw.buzzer, R.raw.d2));
-
+        game.ringRequired = FlavorManager.getRingList();
         saveGame();
     }
 

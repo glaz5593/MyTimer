@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="event_predefine">Event Predefine</string>
+    <string name="event_custom">Event Custom</string>
+    <string name="sent_predefine">Predefine event sent.</string>
+    <string name="reduce20seconds">הורד 20 שניות</string>
+    <string name="reduceMinute">הורד דקה</string>
+    <string name="add20seconds">הוסף 20 שניות</string>
+    <string name="addMinute">הוסף דקה</string>
+    <string name="pause">השהייה</string>
+    <string name="new_game">משחק חדש</string>
+    <string name="next">המשך</string>
+    <string name="stop">עצור</string>
+</resources>
